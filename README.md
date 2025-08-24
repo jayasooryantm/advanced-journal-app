@@ -17,6 +17,11 @@ The app integrates with **Qdrant Vector Database** for semantic search functiona
 
 ---
 
+## Demo
+![Demo](Journal-app-demo.gif)
+
+---
+
 ## 🛠️ Tech Stack
 
 * **Backend:** Django
