@@ -1,0 +1,20 @@
+{% extends "entries/base.html" %}
+{% block content %}
+<div class="max-w-xl mx-auto py-10">
+  <div class="bg-white rounded-xl shadow-lg p-8">
+    <h1 class="text-2xl font-bold text-indigo-700 mb-4">{{ entry.title }}</h1>
+    <p class="text-gray-700 mb-6">{{ entry.content }}</p>
+    <div class="flex justify-between items-center">
+      <span class="text-xs text-gray-400">{{ entry.created_at|date:"M d, Y H:i" }}</span>
+      <div>
+        <a href="{% url 'entry_update' entry.pk %}" class="text-indigo-500 hover:underline text-sm mr-4">Edit</a>
+        <form action="{% url 'entry_delete' entry.pk %}" method="post" class="inline">
+          {% csrf_token %}
+          <button type="submit" class="text-red-500 hover:underline text-sm">Delete</button>
+        </form>
+      </div>
+    </div>
+    <a href="{% url 'entry_list' %}" class="block mt-4 text-indigo-500 hover:underline text-sm">Back to list</a>
+  </div>
+</div>
+{% endblock %}

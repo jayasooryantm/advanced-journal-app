@@ -1,0 +1,80 @@
+{% extends "entries/base.html" %}
+{% block content %}
+<div class="flex items-center justify-center mb-6">
+  <svg class="w-10 h-10 text-indigo-600 mr-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M4 19.5A2.5 2.5 0 006.5 22h11a2.5 2.5 0 002.5-2.5V6a2 2 0 00-2-2H7a2 2 0 00-2 2v13.5z" />
+    <path stroke-linecap="round" stroke-linejoin="round" d="M9 2v4m6-4v4" />
+  </svg>
+  <span class="text-4xl font-extrabold text-indigo-700 tracking-tight">My Journal</span>
+</div>
+
+<div class="max-w-3xl mx-auto py-10">
+  <div class="flex items-center justify-between mb-8">
+    <input type="text" id="searchInput" placeholder="Search your journal..." required
+      class="w-full max-w-lg px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 shadow-sm transition">
+    <a href="{% url 'entry_create' %}" class="ml-4 px-6 py-2 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 transition">
+      + New Note
+    </a>
+  </div>
+  <div id="entriesGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    {% for entry in entries %}
+      <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-2xl transition flex flex-col justify-between">
+        <div>
+          <a href="{% url 'entry_detail' entry.pk %}" class="text-xl font-semibold text-indigo-700 hover:underline">
+            {{ entry.title }}
+          </a>
+          <p class="mt-2 text-gray-600 line-clamp-3">{{ entry.content }}</p>
+        </div>
+        <div class="mt-4 flex justify-between items-center">
+          <span class="text-xs text-gray-400">{{ entry.created_at|date:"M d, Y H:i" }}</span>
+          <a href="{% url 'entry_update' entry.pk %}" class="text-indigo-500 hover:underline text-sm">Edit</a>
+        </div>
+      </div>
+    {% empty %}
+      <div class="col-span-2 text-center text-gray-500 py-10">No entries yet.</div>
+    {% endfor %}
+  </div>
+</div>
+
+<script>
+const searchInput = document.getElementById('searchInput');
+const entriesGrid = document.getElementById('entriesGrid');
+let timeout = null;
+
+searchInput.addEventListener('input', function() {
+  clearTimeout(timeout);
+  timeout = setTimeout(function() {
+    const query = searchInput.value;
+    if (query.length === 0) {
+      window.location.reload(); // Show all entries if empty
+      return;
+    }
+    fetch(`/search/?query=${encodeURIComponent(query)}`)
+      .then(response => response.json())
+      .then(data => {
+        entriesGrid.innerHTML = '';
+        if (data.results.length === 0) {
+          entriesGrid.innerHTML = '<div class="col-span-2 text-center text-gray-500 py-10">No results found.</div>';
+        } else {
+          data.results.forEach(entry => {
+            entriesGrid.innerHTML += `
+              <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-2xl transition flex flex-col justify-between">
+                <div>
+                  <a href="/entry/${entry.id}/" class="text-xl font-semibold text-indigo-700 hover:underline">
+                    ${entry.title}
+                  </a>
+                  <p class="mt-2 text-gray-600 line-clamp-3">${entry.content}</p>
+                </div>
+                <div class="mt-4 flex justify-between items-center">
+                  <span class="text-xs text-gray-400">${entry.created_at}</span>
+                  <a href="/entry/${entry.id}/edit/" class="text-indigo-500 hover:underline text-sm">Edit</a>
+                </div>
+              </div>
+            `;
+          });
+        }
+      });
+  }, 300); // Debounce for 300ms
+});
+</script>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends "entries/base.html" %}
+{% block content %}
+<div class="max-w-xl mx-auto py-10">
+  <div class="bg-white rounded-xl shadow-lg p-8">
+    <h1 class="text-2xl font-bold mb-6 text-indigo-700">
+      {% if form.instance.pk %}Edit Entry{% else %}New Entry{% endif %}
+    </h1>
+    <form method="post">
+      {% csrf_token %}
+      <div class="space-y-4">
+        <div>
+          <label for="{{ form.title.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+          {% load widget_tweaks %}
+          {% render_field form.title class="border border-gray-200 p-2 rounded-full" %}
+          {% if form.title.errors %}
+            <p class="text-red-500 text-xs mt-1">{{ form.title.errors }}</p>
+          {% endif %}
+        </div>
+        <div>
+          <label for="{{ form.content.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Content</label>
+          {% load widget_tweaks %}
+          {% render_field form.content class="border border-gray-200 p-2 rounded-xl" %}
+          {% if form.content.errors %}
+            <p class="text-red-500 text-xs mt-1">{{ form.content.errors }}</p>
+          {% endif %}
+        </div>
+        {% if form.date %}
+        <div>
+          <label for="{{ form.date.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+          {{ form.date }}
+          {% if form.date.errors %}
+            <p class="text-red-500 text-xs mt-1">{{ form.date.errors }}</p>
+          {% endif %}
+        </div>
+        {% endif %}
+      </div>
+
+      <button type="submit" class="mt-4 px-6 py-2 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 transition">
+        Save
+      </button>
+    </form>
+    <a href="{% url 'entry_list' %}" class="block mt-4 text-indigo-500 hover:underline text-sm">Back to list</a>
+  </div>
+</div>
+{% endblock %}
