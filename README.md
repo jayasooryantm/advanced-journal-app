@@ -1,5 +1,3 @@
----
-
 # 📝 Journal App with Qdrant Search
 
 A simple Django application to create, update, delete, and search journal entries.
@@ -32,14 +30,14 @@ The app integrates with **Qdrant Vector Database** for semantic search functiona
 
 ```bash
 git clone https://github.com/your-username/journal-app.git
-cd journal-app
+cd advanced-journal-app
 ```
 
 ### 2. Create & activate a virtual environment
 
 ```bash
-python -m venv venv
-source venv/bin/activate   # on macOS/Linux
+python -m venv .venv
+source .venv/bin/activate   # on macOS/Linux
 venv\Scripts\activate      # on Windows
 ```
 
@@ -65,6 +63,7 @@ DJANGO_DEBUG=True
 ### 5. Run migrations
 
 ```bash
+python manage.py makemigrations
 python manage.py migrate
 ```
 
